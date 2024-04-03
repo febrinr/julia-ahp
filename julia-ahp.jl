@@ -1,5 +1,5 @@
 @time begin
-    function sum_comparison_matrix_rows(comparison_matrix, number_of_criteria)
+    function sum_comparison_matrix_rows()
         sum_matrix_columns = zeros(Float64, 1, number_of_criteria)
 
         for row in comparison_matrix
@@ -11,7 +11,7 @@
         return sum_matrix_columns
     end
 
-    function build_normalized_matrix(sum_matrix_columns, number_of_criteria)
+    function build_normalized_matrix(sum_matrix_columns)
         normalized_matrix = []
 
         for row_number in 1:number_of_criteria
@@ -28,7 +28,7 @@
         return normalized_matrix
     end
 
-    function calculate_priority_vector(normalized_matrix, number_of_criteria)
+    function calculate_priority_vector(normalized_matrix)
         priority_vector = []
 
         for row in normalized_matrix
@@ -38,21 +38,21 @@
         return priority_vector
     end
 
-    function calculate_largest_eigen_value(number_of_criteria, priority_vector, sum_matrix_columns)
+    function calculate_largest_eigen_value(priority_vector, sum_matrix_columns)
         multiplied = []
 
-        for i in 1:(number_of_criteria)
+        for i in 1:number_of_criteria
             push!(multiplied, priority_vector[i] * sum_matrix_columns[i])
         end
         
         return sum(multiplied)
     end
 
-    function calculate_consistency_index(largest_eigen_value, number_of_criteria)
+    function calculate_consistency_index(largest_eigen_value)
         return (largest_eigen_value - number_of_criteria) / (number_of_criteria - 1)
     end
 
-    function calculate_consistency_ratio(consistency_index, number_of_criteria)
+    function calculate_consistency_ratio(consistency_index)
         random_index = Dict(
             1 => 0.00,
             2 => 0.00,
@@ -68,15 +68,13 @@
         return consistency_index / random_index[number_of_criteria]
     end
 
-    function ahp(comparison_matrix)
-        number_of_criteria = length(comparison_matrix[1])
-
-        sum_matrix_columns = sum_comparison_matrix_rows(comparison_matrix, number_of_criteria)
-        normalized_matrix = build_normalized_matrix(sum_matrix_columns, number_of_criteria)
-        priority_vector = calculate_priority_vector(normalized_matrix, number_of_criteria)
-        largest_eigen_value = calculate_largest_eigen_value(number_of_criteria, priority_vector, sum_matrix_columns)
-        consistency_index = calculate_consistency_index(largest_eigen_value, number_of_criteria)
-        consistency_ratio = calculate_consistency_ratio(consistency_index, number_of_criteria)
+    function ahp()
+        sum_matrix_columns = sum_comparison_matrix_rows()
+        normalized_matrix = build_normalized_matrix(sum_matrix_columns)
+        priority_vector = calculate_priority_vector(normalized_matrix)
+        largest_eigen_value = calculate_largest_eigen_value(priority_vector, sum_matrix_columns)
+        consistency_index = calculate_consistency_index(largest_eigen_value)
+        consistency_ratio = calculate_consistency_ratio(consistency_index)
 
         return Dict("priority_vector" => priority_vector, "consistency_ratio" => consistency_ratio)
     end
@@ -88,5 +86,7 @@
         [1/9, 1/7, 1/3, 1]
     ]
 
-    result = ahp(comparison_matrix)
+    number_of_criteria = length(comparison_matrix[1])
+
+    result = ahp()
 end
