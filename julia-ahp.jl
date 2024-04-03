@@ -1,6 +1,6 @@
 @time begin
     function sum_comparison_matrix_rows(comparison_matrix, number_of_criteria)
-        sum_matrix_columns = zeros(1, number_of_criteria)
+        sum_matrix_columns = zeros(Float64, 1, number_of_criteria)
 
         for row in comparison_matrix
             for (index, item) in enumerate(row)
